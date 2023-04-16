@@ -4,7 +4,7 @@ d3.json(url).then(function(data){
     console.log(data.metadata[0]);
     populate_combo_box(data.names);
     populate_demographic_info(data.metadata[0]);
-    create_charts(data.names[0]);
+    //create_charts(data.names[0]);
     //console.log(data.metadata);
 })
 
@@ -28,7 +28,8 @@ function optionChanged(id){
       let matchid = data.metadata.filter(sampid=> sampid.id==id);
       console.log(matchid)
       populate_demographic_info(matchid[0]);
-      create_charts(id);
+      
+      create_charts(matchid);
     })
 }
 
@@ -47,39 +48,32 @@ for (k in data){
 
 function create_charts(data){
   let select=d3.select("#sample-values");
-  //let firstTen = data.otu_ids.slice(0, 10);
+  //select.html("")
+  // Find the sample object that matches the selected sample name
+  let sampch = data.id.find(sample => sample.id === id);
+  console.log(sampch)
   let trace1={
-    x:[data.sample_values],
-    y:[data.otu_ids],
+    x: sample.sample_values.slice(0, 10),
+    y: sample.otu_ids.slice(0, 10).map(id => `OTU ${id}`),
     type: 'bar',
     orientation: 'h'
-  }
+  };
 
   let trace2={
-    x:[data.otu_ids],
-    y:[data.sample_values],
+    x: sample.otu_ids,
+    y: sample.sample_values,
     mode: 'markers',
-  marker: {
-    color: ['rgb(93, 164, 214)', 'rgb(255, 144, 14)',  'rgb(44, 160, 101)', 'rgb(255, 65, 54)'],
-    size: [data.sample_values]
-  }
-  }
+    marker: {
+      color: sample.otu_ids,
+      size: sample.sample_values
+    },
+    text: sample.otu_labels
+  };
 
+  let layout = {
+    xaxis: { title: "OTU ID" },
+  };
 
-  Plotly.newPlot("bar", trace1);
-  Plotly.newPlot("bubble", trace2);
-    //d3.json(url).then(function(data){
-        //console.log(data);
-        //create main chart
-        //let layout = { title: "test"};
-        //Plotly.newPlot("bar", data, layout);
-      //create bubble chart
-       // Plotly.newPlot("bubble", data, layout);
-      //create a gauge chart 
-       // Plotly.newPlot("gauge", data, layout); 
-    //})
-
-
-
+  Plotly.newPlot("bar", [trace1], layout);
+  Plotly.newPlot("bubble", [trace2], layout);
 }
-
