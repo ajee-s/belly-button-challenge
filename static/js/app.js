@@ -47,10 +47,10 @@ for (k in data){
 //create initial chart for first id
 
 function create_charts(data){
-  let select=d3.select("#sample-values");
+  //let select=d3.select("#sample-values");
   //select.html("")
   // Find the sample object that matches the selected sample name
-  let sampch = data.id.find(sample => sample.id === id);
+  let sampch = data.metadata.id.find(sample => sample.id === id);
   console.log(sampch)
   let trace1={
     x: sample.sample_values.slice(0, 10),
