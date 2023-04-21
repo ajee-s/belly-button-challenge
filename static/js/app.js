@@ -4,8 +4,9 @@ d3.json(url).then(function(data){
     console.log(data.metadata[0]);
     populate_combo_box(data.names);
     populate_demographic_info(data.metadata[0]);
-    //create_charts(data.names[0]);
-    //console.log(data.metadata);
+    const chartdata=data.samples.filter(sample=>sample.id==data.metadata[0].id)[0]
+    create_charts(chartdata);
+    
 })
 
 //populate combo box
@@ -25,11 +26,11 @@ function populate_combo_box(data){
 function optionChanged(id){
     console.log(id);
     d3.json(url).then(function(data){
-      let matchid = data.metadata.filter(sampid=> sampid.id==id);
+      let matchid = data.samples.filter(sampid=> sampid.id==id);
       console.log(matchid)
-      populate_demographic_info(matchid[0]);
+      populate_demographic_info(data.metadata.filter(matchid=> matchid.id==id)[0]);
       
-      create_charts(matchid);
+      create_charts(matchid[0]);
     })
 }
 
@@ -46,12 +47,9 @@ for (k in data){
 
 //create initial chart for first id
 
-function create_charts(data){
-  //let select=d3.select("#sample-values");
-  //select.html("")
-  // Find the sample object that matches the selected sample name
-  let sampch = data.metadata.id.find(sample => sample.id === id);
-  console.log(sampch)
+function create_charts(sample){
+  console.log(sample)
+  
   let trace1={
     x: sample.sample_values.slice(0, 10),
     y: sample.otu_ids.slice(0, 10).map(id => `OTU ${id}`),
